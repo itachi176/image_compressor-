@@ -1,5 +1,6 @@
 from zigzag import *
-
+import cv2
+import math
 def encode(img):
     #defind block size 
     block_size = 8
@@ -79,3 +80,13 @@ def encode(img):
     #print(bitstream)
     #cv2.waitKey()
     return bitstream
+
+# img = cv2.imread("emma.png", 0)
+# cv2.imshow("sd", img)
+# cv2.waitKey()
+# bitstream = encode(img)
+# print(bitstream)
+
+def resize(image):
+    image = cv2.resize(image, (10, 10))
+    return image
