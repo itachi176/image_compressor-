@@ -27,3 +27,11 @@
 + Run Length Coding hoặc Huffman 
 - Decode: 
 + Giải mã để thu được ảnh phục hồi 
+3) Một số hình ảnh của giao diện
+
+![](image/gui1.png)
+
+
+
+![](image/gui2.png)
+
