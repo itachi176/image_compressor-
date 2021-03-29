@@ -8,6 +8,18 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog, QPushButton, QMessageBox
+from PyQt5.QtGui import QIcon, QPixmap
+import compress
+# import encode
+import cv2
+import math
+import numpy as np
+import zigzag
+import encode
+import time 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -58,14 +70,14 @@ class Ui_MainWindow(object):
         self.compress_display.setText("")
         self.compress_display.setObjectName("compress_display")
         self.originSize = QtWidgets.QLabel(self.centralwidget)
-        self.originSize.setGeometry(QtCore.QRect(360, 410, 101, 21))
+        self.originSize.setGeometry(QtCore.QRect(370, 410, 101, 21))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.originSize.setFont(font)
         self.originSize.setFrameShape(QtWidgets.QFrame.Box)
         self.originSize.setObjectName("originSize")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(730, 410, 111, 21))
+        self.label.setGeometry(QtCore.QRect(740, 410, 111, 21))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.label.setFont(font)
@@ -78,7 +90,7 @@ class Ui_MainWindow(object):
         self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")
         self.label_6 = QtWidgets.QLabel(self.centralwidget)
-        self.label_6.setGeometry(QtCore.QRect(850, 410, 67, 17))
+        self.label_6.setGeometry(QtCore.QRect(860, 410, 67, 17))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.label_6.setFont(font)
@@ -170,6 +182,9 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.pushButton.clicked.connect(self.openImage)
+        self.pushButton_2.clicked.connect(self.compressImage)
+        self.pushButton_3.clicked.connect(self.saveImage)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -191,6 +206,73 @@ class Ui_MainWindow(object):
         self.label_5.setText(_translate("MainWindow", "Entropy:"))
         self.label_14.setText(_translate("MainWindow", "Entropy: "))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
+
+    def openImage(self):
+        self.image = QFileDialog.getOpenFileName(None, 'open file', '', "Image files (*.bmp *.png *.jpg)")
+        self.imagePath = self.image[0]
+        org_img = cv2.imread(self.imagePath, 0)
+        self.pixmap = QPixmap(self.imagePath)
+        self.origin_display.setPixmap(self.pixmap.scaled(351,331))
+        self.origin_display.adjustSize()      
+        # self.setCentralWidget(origin_display)
+        # self.resize(pixmap.width(), pixmap.height())                
+        self.size = self.pixmap.width()*self.pixmap.height()/1024
+        self.originSize.setText(str(self.size))
+        #print(ocr.resimden_yaziya(imagePath))
+        print(self.imagePath)
+        #caculator entopy
+        self.entropy = self.caculator_Entropy(org_img)
+        self.entropy = round(self.entropy, 5)
+        self.label_13.setText(str(self.entropy))
+
+    def compressImage(self):
+        start = time.time()
+        # self.image = cv2.imread("emma.png", cv2.IMREAD_GRAYSCALE)
+        self.image = cv2.imread(self.imagePath, 0)
+        self.image = cv2.resize(self.image,(351, 331))
+        
+        bitstream, padd_image = encode.encode(self.image)
+        self.image_compress = compress.compress(bitstream)
+        # cv2.imwrite("test.png", image_compress)
+        # cv2.imwrite("test1.png", padd_image)
+
+
+        image_compress_display = QtGui.QImage(self.image_compress, self.image_compress.shape[1], self.image_compress.shape[0], self.image_compress.shape[1], QtGui.QImage.Format_Indexed8)
+        self.compress_display.setPixmap(QtGui.QPixmap.fromImage(image_compress_display))
+        size_compress = (len(bitstream)-5)*8/8/1024
+        #lam tron den 5 so sau thap phan 
+        size_compress = round(size_compress, 5)
+        self.label.setText(str(size_compress))
+        self.image_compress = cv2.resize(self.image_compress, (self.image.shape[1], self.image.shape[0]))
+        #caculator mse
+        mse = np.square(self.image-self.image_compress).mean()
+        mse = round(mse, 5)
+        self.label_10.setText(str(mse))
+        #caculator time compress
+        _time = round(time.time()-start, 5)
+        self.label_8.setText(str(_time)+ 's')
+
+        #caculator entropy for image compressed 
+        self.entropy_new = self.caculator_Entropy(self.image_compress)
+        self.entropy_new = round(self.entropy_new, 5)
+        self.label_15.setText(str(self.entropy_new))
+
+        # cv2.imshow("hah", image_compress)
+        # cv2.waitKey()
+
+    def saveImage(self):
+        cv2.imwrite("image_compress.png", self.image_compress)
+        msg = QMessageBox()
+        msg.setWindowTitle("Image Compress")
+        msg.setText("Image Saved!!!")
+        
+        x = msg.exec_()
+
+    def caculator_Entropy(self, img):
+        marg = np.histogramdd(np.ravel(img), bins=256)[0] / img.size
+        marg = list(filter(lambda p: p > 0, np.ravel(marg)))
+        entropy = -np.sum(np.multiply(marg, np.log2(marg)))
+        return entropy
 
 
 if __name__ == "__main__":

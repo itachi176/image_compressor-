@@ -152,8 +152,8 @@ class Ui_MainWindow(object):
         self.label.setText(str(size_compress))
 
         #caculator mse
-        mse = np.square(image-image_compress).mean()
-        
+        # mse = np.square(image-image_compress).mean()
+
         # cv2.imshow("hah", image_compress)
         # cv2.waitKey()
 

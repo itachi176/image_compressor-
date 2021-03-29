@@ -156,7 +156,7 @@
    <widget class="QLabel" name="originSize">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>370</x>
       <y>410</y>
       <width>101</width>
       <height>21</height>
@@ -177,7 +177,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>730</x>
+      <x>740</x>
       <y>410</y>
       <width>111</width>
       <height>21</height>
@@ -216,7 +216,7 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>850</x>
+      <x>860</x>
       <y>410</y>
       <width>67</width>
       <height>17</height>
