@@ -248,14 +248,21 @@ class Ui_MainWindow(object):
         mse = np.square(self.image-self.image_compress).mean()
         mse = round(mse, 5)
         self.label_10.setText(str(mse))
-        #caculator time compress
-        _time = round(time.time()-start, 5)
-        self.label_8.setText(str(_time)+ 's')
 
         #caculator entropy for image compressed 
         self.entropy_new = self.caculator_Entropy(self.image_compress)
         self.entropy_new = round(self.entropy_new, 5)
         self.label_15.setText(str(self.entropy_new))
+
+        #caculator rate commpress 
+        rate = 1 - (len(bitstream)-5)*8/(512*512*8)
+        rate = round(rate, 5)
+        self.label_12.setText(str(rate))
+        #caculator time compress
+        _time = round(time.time()-start, 5)
+        self.label_8.setText(str(_time)+ 's')
+
+        
 
         # cv2.imshow("hah", image_compress)
         # cv2.waitKey()
