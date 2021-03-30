@@ -90,3 +90,5 @@ def encode(img):
 def resize(image):
     image = cv2.resize(image, (10, 10))
     return image
+
+    
