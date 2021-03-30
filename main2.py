@@ -180,12 +180,10 @@ class Ui_MainWindow(object):
         self.menuFile.setObjectName("menuFile")
         MainWindow.setMenuBar(self.menuBar)
         self.menuBar.addAction(self.menuFile.menuAction())
-        #create checkBox 
-        self.box1 = QCheckBox("RLE")
-        self.box1.move(30,430)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
         self.pushButton.clicked.connect(self.openImage)
         self.pushButton_2.clicked.connect(self.compressImage)
         self.pushButton_3.clicked.connect(self.saveImage)
@@ -210,6 +208,7 @@ class Ui_MainWindow(object):
         self.label_5.setText(_translate("MainWindow", "Entropy:"))
         self.label_14.setText(_translate("MainWindow", "Entropy: "))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
+
 
     def openImage(self):
         self.image = QFileDialog.getOpenFileName(None, 'open file', '', "Image files (*.bmp *.png *.jpg)")

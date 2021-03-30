@@ -90,7 +90,7 @@ def encode(img):
     file2.write(encoded_text)
     file2.close()
 
-    return encoded_text
+    return encoded_text, bitstream
 
 # img = cv2.imread("emma.png", 0)
 # cv2.imshow("sd", img)

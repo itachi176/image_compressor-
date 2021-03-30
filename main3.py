@@ -6,7 +6,6 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QPushButton, QMessageBox, QCheckBox
@@ -20,7 +19,7 @@ import numpy as np
 import zigzag
 from encode import *
 import time 
-
+import compress_RLE
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -169,6 +168,18 @@ class Ui_MainWindow(object):
         self.label_15.setFrameShape(QtWidgets.QFrame.Box)
         self.label_15.setText("")
         self.label_15.setObjectName("label_15")
+        self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox.setGeometry(QtCore.QRect(20, 410, 92, 23))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.checkBox.setFont(font)
+        self.checkBox.setObjectName("checkBox")
+        self.checkBox_2 = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_2.setGeometry(QtCore.QRect(20, 440, 121, 23))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.checkBox_2.setFont(font)
+        self.checkBox_2.setObjectName("checkBox_2")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -180,9 +191,6 @@ class Ui_MainWindow(object):
         self.menuFile.setObjectName("menuFile")
         MainWindow.setMenuBar(self.menuBar)
         self.menuBar.addAction(self.menuFile.menuAction())
-        #create checkBox 
-        self.box1 = QCheckBox("RLE")
-        self.box1.move(30,430)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -209,7 +217,10 @@ class Ui_MainWindow(object):
         self.label_11.setText(_translate("MainWindow", "Rate:"))
         self.label_5.setText(_translate("MainWindow", "Entropy:"))
         self.label_14.setText(_translate("MainWindow", "Entropy: "))
+        self.checkBox.setText(_translate("MainWindow", "RLE"))
+        self.checkBox_2.setText(_translate("MainWindow", "Huffman"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
+
 
     def openImage(self):
         self.image = QFileDialog.getOpenFileName(None, 'open file', '', "Image files (*.bmp *.png *.jpg)")
@@ -235,14 +246,20 @@ class Ui_MainWindow(object):
         self.image = cv2.imread(self.imagePath, 0)
         self.image = cv2.resize(self.image,(351, 331))
         
-        encoded_text = encode(self.image)
-        self.image_compress = compress(encoded_text)
+        encoded_text1, bitstream = encode(self.image)
+        if (self.checkBox.isChecked()):
+            encoded_text = bitstream
+            self.image_compress = compress_RLE.compress_RLE(bitstream)
+        else:
+            encoded_text = encoded_text1
+            self.image_compress = compress(encoded_text)
         # cv2.imwrite("test.png", image_compress)
         # cv2.imwrite("test1.png", padd_image)
 
 
         image_compress_display = QtGui.QImage(self.image_compress, self.image_compress.shape[1], self.image_compress.shape[0], self.image_compress.shape[1], QtGui.QImage.Format_Indexed8)
         self.compress_display.setPixmap(QtGui.QPixmap.fromImage(image_compress_display))
+       
         size_compress = (len(encoded_text)-5)*8/8/1024
         #lam tron den 5 so sau thap phan 
         size_compress = round(size_compress, 5)
