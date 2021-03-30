@@ -7,7 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QPushButton
 from PyQt5.QtGui import QIcon, QPixmap
 import compress
 # import encode
@@ -29,6 +29,7 @@ class Ui_MainWindow(object):
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(0, 510, 811, 61))
         self.pushButton_2.setObjectName("pushButton_2")
+        #button save 
         
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setGeometry(QtCore.QRect(20, 390, 41, 17))
@@ -136,15 +137,26 @@ class Ui_MainWindow(object):
         
     def compressImage(self):
         # self.image = cv2.imread("emma.png", cv2.IMREAD_GRAYSCALE)
-        image_compress = cv2.imread(self.imagePath, 0)
-        image_compress = cv2.resize(image_compress,(351, 321))
+        image = cv2.imread(self.imagePath, 0)
+        image_compress = cv2.resize(image,(351, 321))
         
-        # bitstream = encode.encode(image)
-        # image_compress = compress.compress(bitstream)
-        # cv2.imshow("hah", image_compress)
-        # cv2.waitKey()
+        bitstream, padd_image = encode.encode(image_compress)
+        image_compress = compress.compress(bitstream)
+        cv2.imwrite("test.png", image_compress)
+        cv2.imwrite("test1.png", padd_image)
+
+
         image_compress = QtGui.QImage(image_compress, image_compress.shape[1], image_compress.shape[0], image_compress.shape[1], QtGui.QImage.Format_Indexed8)
         self.compress_display.setPixmap(QtGui.QPixmap.fromImage(image_compress))
+        size_compress = (len(bitstream)-5)*8/8/1024
+        self.label.setText(str(size_compress))
+
+        #caculator mse
+        # mse = np.square(image-image_compress).mean()
+
+        # cv2.imshow("hah", image_compress)
+        # cv2.waitKey()
+
 
         
 if __name__ == "__main__":

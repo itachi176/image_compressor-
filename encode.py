@@ -79,16 +79,19 @@ def encode(img):
     bitstream = str(padd_img.shape[0]) + " " + str(padd_img.shape[1]) + " " + bitstream + ";"
     #print(bitstream)
     #cv2.waitKey()
-    return bitstream
+    return bitstream, padd_img
 
 # img = cv2.imread("emma.png", 0)
 # cv2.imshow("sd", img)
 # cv2.waitKey()
 # bitstream = encode(img)
 # print(bitstream)
+<<<<<<< HEAD
 
 def resize(image):
     image = cv2.resize(image, (10, 10))
     return image
 
     
+=======
+>>>>>>> dc4f141384195cd238d649558b0a569ccd29a4e2
