@@ -86,12 +86,3 @@ def encode(img):
 # cv2.waitKey()
 # bitstream = encode(img)
 # print(bitstream)
-<<<<<<< HEAD
-
-def resize(image):
-    image = cv2.resize(image, (10, 10))
-    return image
-
-    
-=======
->>>>>>> dc4f141384195cd238d649558b0a569ccd29a4e2
