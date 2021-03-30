@@ -1,4 +1,5 @@
 from zigzag import *
+from huffman import *
 import cv2
 import math
 def encode(img):
@@ -79,7 +80,17 @@ def encode(img):
     bitstream = str(padd_img.shape[0]) + " " + str(padd_img.shape[1]) + " " + bitstream + ";"
     #print(bitstream)
     #cv2.waitKey()
-    return bitstream, padd_img
+    tree = HuffmanTree()
+    tree.build_tree(bitstream)
+    encoded_text = tree.encode(bitstream)
+    # print("Encoded text: {}\n".format(" ".join("{:02x}".format(c) for c in encoded_text)))
+   
+    # print(encoded_text)
+    file2 = open("encode_text.txt", 'wb')
+    file2.write(encoded_text)
+    file2.close()
+
+    return encoded_text
 
 # img = cv2.imread("emma.png", 0)
 # cv2.imshow("sd", img)

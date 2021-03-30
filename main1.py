@@ -11,13 +11,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QPushButton, QMessageBox
 from PyQt5.QtGui import QIcon, QPixmap
-import compress
+from huffman import *
+from compress import *
 # import encode
 import cv2
 import math
 import numpy as np
 import zigzag
-import encode
+from encode import *
 import time 
 
 class Ui_MainWindow(object):
@@ -231,15 +232,15 @@ class Ui_MainWindow(object):
         self.image = cv2.imread(self.imagePath, 0)
         self.image = cv2.resize(self.image,(351, 331))
         
-        bitstream, padd_image = encode.encode(self.image)
-        self.image_compress = compress.compress(bitstream)
+        encoded_text = encode(self.image)
+        self.image_compress = compress(encoded_text)
         # cv2.imwrite("test.png", image_compress)
         # cv2.imwrite("test1.png", padd_image)
 
 
         image_compress_display = QtGui.QImage(self.image_compress, self.image_compress.shape[1], self.image_compress.shape[0], self.image_compress.shape[1], QtGui.QImage.Format_Indexed8)
         self.compress_display.setPixmap(QtGui.QPixmap.fromImage(image_compress_display))
-        size_compress = (len(bitstream)-5)*8/8/1024
+        size_compress = (len(encoded_text)-5)*8/8/1024
         #lam tron den 5 so sau thap phan 
         size_compress = round(size_compress, 5)
         self.label.setText(str(size_compress))
@@ -255,7 +256,7 @@ class Ui_MainWindow(object):
         self.label_15.setText(str(self.entropy_new))
 
         #caculator rate commpress 
-        rate = 1 - (len(bitstream)-5)*8/(512*512*8)
+        rate = 1 - (len(encoded_text)-5)*8/(512*512*8)
         rate = round(rate, 5)
         self.label_12.setText(str(rate))
         #caculator time compress
