@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1041</width>
-    <height>542</height>
+    <height>549</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -115,9 +115,9 @@
    <widget class="QLabel" name="origin_display">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>310</x>
       <y>60</y>
-      <width>351</width>
+      <width>341</width>
       <height>331</height>
      </rect>
     </property>
@@ -473,6 +473,39 @@
     </property>
     <property name="text">
      <string>Huffman</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_16">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>470</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Qualization:</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBox">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>470</y>
+      <width>48</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
     </property>
    </widget>
   </widget>

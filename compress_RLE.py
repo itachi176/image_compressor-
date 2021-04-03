@@ -1,6 +1,6 @@
 from zigzag import *
 import cv2
-def compress_RLE(bitstream):
+def compress_RLE(bitstream, quantization):
     QUANTIZATION_MAT = np.array([[16,11,10,16,24,40,51,61],[12,12,14,19,26,58,60,55],[14,13,16,24,40,57,69,56 ],[14,17,22,29,51,87,80,62],[18,22,37,56,68,109,103,77],[24,35,55,64,81,104,113,92],[49,64,78,87,103,121,120,101],[72,92,95,98,112,100,103,99]])
 
     # defining block size
@@ -22,7 +22,7 @@ def compress_RLE(bitstream):
 
     while k < array.shape[0]:
     # Oh! image has ended
-        if(details[i] == ';'):
+        if(details[i] == '999'):
             break
     # This is imp! note that to get negative numbers in array check for - sign in string
         if "-" not in details[i]:
@@ -49,6 +49,7 @@ def compress_RLE(bitstream):
 
     # initialisation of compressed image
     padded_img = np.zeros((h,w))
+    print(padded_img.shape)
 
     while i < h:
         j = 0
@@ -56,7 +57,7 @@ def compress_RLE(bitstream):
             temp_stream = array[i:i+8,j:j+8]                
             block = inverse_zigzag(temp_stream.flatten(), int(block_size),int(block_size))            
             de_quantized = np.multiply(block,QUANTIZATION_MAT)                
-            padded_img[i:i+8,j:j+8] = cv2.idct(de_quantized)        
+            padded_img[i:i+8,j:j+8] = cv2.idct(de_quantized*quantization)        
             j = j + 8        
         i = i + 8
 

@@ -2,9 +2,10 @@
 from zigzag import *
 from huffman import *
 import cv2
-def compress(encoded_text):
+def compress(encoded_text, quantization):
     new_tree = HuffmanTree()
     bitstream = new_tree.decode(encoded_text)
+    print('a', bitstream)
 
     QUANTIZATION_MAT = np.array([[16,11,10,16,24,40,51,61],
                                  [12,12,14,19,26,58,60,55],
@@ -22,6 +23,7 @@ def compress(encoded_text):
     w = int(''.join(filter(str.isdigit, details[1])))
 
     array = np.zeros(h*w).astype(int)
+    print("shape", details)
     # some loop var initialisation
     k = 0
     i = 2
@@ -32,8 +34,7 @@ def compress(encoded_text):
     # This loop gives us reconstructed array of size of image
 
     while k < array.shape[0]:
-    # Oh! image has ended
-        if(details[i] == ';'):
+        if(details[i] == '999'):
             break
     # This is imp! note that to get negative numbers in array check for - sign in string
         if "-" not in details[i]:
@@ -67,7 +68,7 @@ def compress(encoded_text):
             temp_stream = array[i:i+8,j:j+8]                
             block = inverse_zigzag(temp_stream.flatten(), int(block_size),int(block_size))            
             de_quantized = np.multiply(block,QUANTIZATION_MAT)                
-            padded_img[i:i+8,j:j+8] = cv2.idct(de_quantized)        
+            padded_img[i:i+8,j:j+8] = cv2.idct(de_quantized*quantization)        
             j = j + 8        
         i = i + 8
 

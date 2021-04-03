@@ -8,7 +8,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QPushButton, QMessageBox, QCheckBox
+from PyQt5.QtWidgets import QFileDialog, QPushButton, QMessageBox, QCheckBox, QSpinBox
 from PyQt5.QtGui import QIcon, QPixmap
 from huffman import *
 from compress import *
@@ -22,7 +22,7 @@ import time
 import compress_RLE
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
+        MainWindow.setObjectName("UET Image Compressor")
         MainWindow.resize(1041, 542)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -146,28 +146,32 @@ class Ui_MainWindow(object):
         font.setPointSize(16)
         self.label_5.setFont(font)
         self.label_5.setObjectName("label_5")
-        self.label_13 = QtWidgets.QLabel(self.centralwidget)
-        self.label_13.setGeometry(QtCore.QRect(400, 460, 101, 17))
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        self.label_13.setFont(font)
-        self.label_13.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_13.setText("")
-        self.label_13.setObjectName("label_13")
+        self.spinBox = QtWidgets.QSpinBox(self.centralwidget)
+        self.spinBox.setGeometry(QtCore.QRect(150, 470, 48, 26))
+        self.spinBox.setObjectName("spinBox")
+        self.spinBox.valueChanged.connect(self.show_result)
+        # self.label_13 = QtWidgets.QLabel(self.centralwidget)
+        # self.label_13.setGeometry(QtCore.QRect(400, 460, 101, 17))
+        # font = QtGui.QFont()
+        # font.setPointSize(16)
+        # self.label_13.setFont(font)
+        # self.label_13.setFrameShape(QtWidgets.QFrame.Box)
+        # self.label_13.setText("")
+        # self.label_13.setObjectName("label_13")
         self.label_14 = QtWidgets.QLabel(self.centralwidget)
         self.label_14.setGeometry(QtCore.QRect(680, 450, 91, 31))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.label_14.setFont(font)
         self.label_14.setObjectName("label_14")
-        self.label_15 = QtWidgets.QLabel(self.centralwidget)
-        self.label_15.setGeometry(QtCore.QRect(770, 460, 101, 17))
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        self.label_15.setFont(font)
-        self.label_15.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_15.setText("")
-        self.label_15.setObjectName("label_15")
+        # self.label_15 = QtWidgets.QLabel(self.centralwidget)
+        # self.label_15.setGeometry(QtCore.QRect(770, 460, 101, 17))
+        # font = QtGui.QFont()
+        # font.setPointSize(16)
+        # self.label_15.setFont(font)
+        # self.label_15.setFrameShape(QtWidgets.QFrame.Box)
+        # self.label_15.setText("")
+        # self.label_15.setObjectName("label_15")
         self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox.setGeometry(QtCore.QRect(20, 410, 92, 23))
         font = QtGui.QFont()
@@ -191,6 +195,12 @@ class Ui_MainWindow(object):
         self.menuFile.setObjectName("menuFile")
         MainWindow.setMenuBar(self.menuBar)
         self.menuBar.addAction(self.menuFile.menuAction())
+        self.label_16 = QtWidgets.QLabel(self.centralwidget)
+        self.label_16.setGeometry(QtCore.QRect(20, 470, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.label_16.setFont(font)
+        self.label_16.setObjectName("label_16")
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -213,13 +223,15 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "Kb"))
         self.pushButton_3.setText(_translate("MainWindow", "Save Image Compress "))
         self.label_7.setText(_translate("MainWindow", "Time: "))
-        self.label_9.setText(_translate("MainWindow", "MSE:"))
+        self.label_9.setText(_translate("MainWindow", "PSNR:"))
         self.label_11.setText(_translate("MainWindow", "Rate:"))
-        self.label_5.setText(_translate("MainWindow", "Entropy:"))
-        self.label_14.setText(_translate("MainWindow", "Entropy: "))
+        # self.label_5.setText(_translate("MainWindow", "Entropy:"))
+        # self.label_14.setText(_translate("MainWindow", "Entropy: "))
         self.checkBox.setText(_translate("MainWindow", "RLE"))
         self.checkBox_2.setText(_translate("MainWindow", "Huffman"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
+        self.label_16.setText(_translate("MainWindow", "Quatization: "))
+        
 
 
     def openImage(self):
@@ -236,23 +248,25 @@ class Ui_MainWindow(object):
         #print(ocr.resimden_yaziya(imagePath))
         print(self.imagePath)
         #caculator entopy
-        self.entropy = self.caculator_Entropy(org_img)
-        self.entropy = round(self.entropy, 5)
-        self.label_13.setText(str(self.entropy))
+        # self.entropy = self.caculator_Entropy(org_img)
+        # self.entropy = round(self.entropy, 5)
+        # self.label_13.setText(str(self.entropy))
 
     def compressImage(self):
         start = time.time()
+        quantization = self.spinBox.value()
+        print(quantization)
         # self.image = cv2.imread("emma.png", cv2.IMREAD_GRAYSCALE)
         self.image = cv2.imread(self.imagePath, 0)
         self.image = cv2.resize(self.image,(351, 331))
         
-        encoded_text1, bitstream = encode(self.image)
-        if (self.checkBox.isChecked()):
-            encoded_text = bitstream
-            self.image_compress = compress_RLE.compress_RLE(bitstream)
-        else:
+        encoded_text1, bitstream = encode(self.image, quantization)
+        if (self.checkBox_2.isChecked()):
             encoded_text = encoded_text1
-            self.image_compress = compress(encoded_text)
+            self.image_compress = compress(encoded_text, quantization)
+        else:
+            encoded_text = bitstream
+            self.image_compress = compress_RLE.compress_RLE(bitstream, quantization)
         # cv2.imwrite("test.png", image_compress)
         # cv2.imwrite("test1.png", padd_image)
 
@@ -268,12 +282,14 @@ class Ui_MainWindow(object):
         #caculator mse
         mse = np.square(self.image-self.image_compress).mean()
         mse = round(mse, 5)
-        self.label_10.setText(str(mse))
+        psnr = 10*(np.log10((255*255)/mse))
+        psnr = round(psnr, 5)
+        self.label_10.setText(str(psnr))
 
-        #caculator entropy for image compressed 
-        self.entropy_new = self.caculator_Entropy(self.image_compress)
-        self.entropy_new = round(self.entropy_new, 5)
-        self.label_15.setText(str(self.entropy_new))
+        # #caculator entropy for image compressed 
+        # self.entropy_new = self.caculator_Entropy(self.image_compress)
+        # self.entropy_new = round(self.entropy_new, 5)
+        # self.label_15.setText(str(self.entropy_new))
 
         #caculator rate commpress 
         rate = 1 - (len(encoded_text)-5)*8/(512*512*8)
@@ -289,7 +305,8 @@ class Ui_MainWindow(object):
         # cv2.waitKey()
 
     def saveImage(self):
-        cv2.imwrite("image_compress.png", self.image_compress)
+        #self.image_compress = cv2.resize(self.image_compress, (512, 512))
+        cv2.imwrite("image_compress_15.png", self.image_compress)
         msg = QMessageBox()
         msg.setWindowTitle("Image Compress")
         msg.setText("Image Saved!!!")
@@ -301,6 +318,9 @@ class Ui_MainWindow(object):
         marg = list(filter(lambda p: p > 0, np.ravel(marg)))
         entropy = -np.sum(np.multiply(marg, np.log2(marg)))
         return entropy
+
+    def show_result(self):
+        quantization = self.spinBox.value()
 
 
 if __name__ == "__main__":

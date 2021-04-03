@@ -2,7 +2,7 @@ from zigzag import *
 from huffman import *
 import cv2
 import math
-def encode(img):
+def encode(img, quantization):
     #defind block size 
     block_size = 8
     #quantization matrix 
@@ -36,7 +36,7 @@ def encode(img):
     padd_img = np.zeros((H, W))
 
     padd_img[0:height,0:width] = img[0:height,0:width]
-    print((padd_img).shape)
+    # print((padd_img).shape)
     # cv2.imshow("pad img", np.uint8(padd_img))
     #image->block 8x8 
     #dct with each block
@@ -53,7 +53,7 @@ def encode(img):
             #reshape to 8x8
             reshaped= np.reshape(reordered, (block_size, block_size)) 
             #copy block to padd_image
-            padd_img[row1:row2, col1:col2]=reshaped
+            padd_img[row1:row2, col1:col2]=(reshaped/quantization)
 
     def get_run_length_encoding(image):
         i = 0
@@ -61,6 +61,7 @@ def encode(img):
         stream = []    
         bitstream = ""
         image = image.astype(int)
+        print("image", image)
         while i < image.shape[0]:
             if image[i] != 0:            
                 stream.append((image[i],skip))
@@ -73,16 +74,17 @@ def encode(img):
         return bitstream
 
     array = padd_img.flatten()
-    print(array)
+    # print(array)
     #cv2.imshow("padd_img", padd_img)
 
     bitstream = get_run_length_encoding(array)
-    bitstream = str(padd_img.shape[0]) + " " + str(padd_img.shape[1]) + " " + bitstream + ";"
-    #print(bitstream)
+    bitstream = str(padd_img.shape[0]) + " " + str(padd_img.shape[1]) + " " + bitstream + "999"
+    print(bitstream)
     #cv2.waitKey()
     tree = HuffmanTree()
     tree.build_tree(bitstream)
     encoded_text = tree.encode(bitstream)
+    # print(encode_text)
     # print("Encoded text: {}\n".format(" ".join("{:02x}".format(c) for c in encoded_text)))
    
     # print(encoded_text)
