@@ -279,6 +279,7 @@ class Ui_MainWindow(object):
         size_compress = round(size_compress, 5)
         self.label.setText(str(size_compress))
         self.image_compress = cv2.resize(self.image_compress, (self.image.shape[1], self.image.shape[0]))
+        self.image_compress = cv2.bilateralFilter(self.image_compress, 9,75,75)
         #caculator mse
         mse = np.square(self.image-self.image_compress).mean()
         mse = round(mse, 5)
