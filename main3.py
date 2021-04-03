@@ -306,11 +306,11 @@ class Ui_MainWindow(object):
         # cv2.waitKey()
 
     def saveImage(self):
-        #self.image_compress = cv2.resize(self.image_compress, (512, 512))
-        cv2.imwrite("image_compress_15.png", self.image_compress)
-        msg = QMessageBox()
-        msg.setWindowTitle("Image Compress")
-        msg.setText("Image Saved!!!")
+        name, _ = QFileDialog.getSaveFileName(None, 'Save File',"Image files (*.bmp *.png *.jpg)")
+        #file, _ = open(name,'w')
+        #text = self.textEdit.toPlainText()
+        cv2.imwrite(name, self.image_compress)
+        #file.close()
         
         x = msg.exec_()
 
