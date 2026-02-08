@@ -1,37 +1,56 @@
-# image_compressor-
-- Giao diện cơ bản mô phỏng hệ thống nén ảnh theo chuẩn JPEG sử dụng python, opencv, pyqt5: 
+# Image Compressor
 
-1) Flow Diagram
+## 1. Overview
 
-- Encode:
-![](image/flow%20diagram.png)
+This project implements a basic graphical interface that simulates an image compression system based on the JPEG standard using **Python, OpenCV, and PyQt5**.
 
+## 2. Flow Diagram
 
+### 2.1 Encoding Process
 
+![Encoding Flow Diagram](image/flow%20diagram.png)
 
-- Decode: 
+### 2.2 Decoding Process
 
+![Decoding Flow Diagram](image/flow%20diagram1.png)
 
+---
 
-![](image/flow%20diagram1.png)
+## 3. System Description
 
+### 3.1 Encoding
 
-2) Mô tả hoạt động 
-- Encode: 
-+ Chia ảnh thành các block nhỏ 8x8 múc đích để giảm thời gian tính toán
-+ Do không phải ma trận ảnh nào cũng chia hết cho 8 nên phải padd thêm các điểm ảnh 0 bên ngoài để chia đủ khối 8x8 
-+ Với mỗi khối 8x8 biến đổi DCT 
-+ Thu được ảnh mới sau DCT 
-+ Lượng tử hóa với bẳng lượng tử và thuật toán zigzag 
-+ Trải ma trận thu được thành ma trận 1-D
-+ Run Length Coding hoặc Huffman 
-- Decode: 
-+ Giải mã để thu được ảnh phục hồi 
-3) Một số hình ảnh của giao diện
+The encoding process consists of the following steps:
 
-![](image/gui1.png)
+- The input image is divided into small **8×8 blocks** to reduce computational complexity.
+- Since the image dimensions may not be divisible by 8, **zero-padding** is applied to ensure complete 8×8 blocks.
+- Each 8×8 block is transformed using the **Discrete Cosine Transform (DCT)**.
+- The transformed blocks are combined to obtain the DCT-transformed image.
+- **Quantization** is performed using a quantization table and the **zigzag scanning algorithm**.
+- The resulting matrices are converted into **one-dimensional arrays**.
+- Data compression is applied using **Run-Length Encoding (RLE)** or **Huffman coding**.
 
+### 3.2 Decoding
 
+The decoding process includes the following steps:
 
-![](image/gui2.png)
+- The compressed data is decoded to reconstruct the quantized coefficients.
+- Inverse zigzag scanning is applied to restore the 8×8 block structure.
+- **Dequantization** is performed using the quantization table.
+- Each block undergoes **Inverse DCT (IDCT)**.
+- The blocks are merged to reconstruct the original image.
+- Padding pixels are removed to recover the original image size.
 
+---
+
+## 4. Graphical User Interface
+
+Some screenshots of the implemented graphical interface are shown below:
+
+### Figure 1: Main Interface
+
+![GUI Screenshot 1](image/gui1.png)
+
+### Figure 2: Compression Interface
+
+![GUI Screenshot 2](image/gui2.png)
